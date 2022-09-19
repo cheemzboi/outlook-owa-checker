@@ -1,10 +1,10 @@
 
 import requests
-#from bs4 import BeautifulSoup as bs
+from bs4 import BeautifulSoup as bs
 import csv 
 import re 
-
-
+import time
+#latest1
 
 
 
