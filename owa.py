@@ -14,7 +14,6 @@ def sendreq(url,values):
         response = requests.post(url, data=values)
         status=response.status_code
         print(status)
-        open('owa3.html', 'wb').write(response.content)
         kuntent=response.text
         
     except Exception:
