@@ -1,9 +1,7 @@
 
 import requests
-from bs4 import BeautifulSoup as bs
 import csv 
 import re 
-import time
 #latest1
 hit=0
 fail=0 
