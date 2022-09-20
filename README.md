@@ -1,6 +1,5 @@
 # outlook-owa-checker
 
-[![Run on Repl.it](https://replit.com/badge/github/cheemzboi/outlook-owa-checker)](https://replit.com/new/github/cheemzboi/outlook-owa-checker)
 <img alt="GitHub" src="https://img.shields.io/github/license/cheemzboi/outlook-owa-checker?color=purple&style=plastic">
 
 <div align="center">
